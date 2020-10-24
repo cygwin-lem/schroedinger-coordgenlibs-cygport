@@ -1,0 +1,128 @@
+################################
+inherit cmake ninja
+
+################################
+
+NAME=schroedinger-coordgenlibs
+VERSION=1.4.2
+RELEASE=1
+
+################################
+CATEGORY="Libs"
+SUMMARY="A library for 2D coordinate generation for chemical compounds"
+DESCRIPTION="coordgen is a library for 2D coordinate generation for chemical compounds."
+HOMEPAGE="https://github.com/schrodinger/coordgenlibs"
+
+################################
+## Source from a git repository
+################################
+GIT_REPO="https://github.com/schrodinger/coordgenlibs"
+declare -A GIT_DATEHASH_BY_NAME=(
+  # git log --date=iso-strict --format='%cd/%H' -1 v1.4.2
+  [1.4.2]=2020-10-13T12:06:25-07:00/98d819aa91482ab59afa1bf78ce429d5bd8532fd
+)
+REV_HASH="${GIT_DATEHASH_BY_NAME[${VERSION}]#*/}"
+REV_DATE="${GIT_DATEHASH_BY_NAME[${VERSION}]%/*}"
+REV_DATE_SHORT="${GIT_DATEHASH_BY_NAME[${VERSION}]%T*}"
+GIT_BASENAME="${GIT_REPO##*/}"
+SRC_URI="${GIT_REPO}/archive/${REV_HASH}.tar.gz"   # GitHub
+#SRC_URI="${GIT_REPO}/-/archive/${REV_HASH}/${GIT_BASENAME}-${REV_HASH}.tar.bz2" # GitLab
+SRC_DIR="${GIT_BASENAME}-${REV_HASH}"
+
+################################
+## ABI for libcoordgen
+ABI=1
+################################
+
+################################
+## Settings for CMake
+################################
+if [ -n "${NO_NINJA}" ]; then
+  MAKEOPTS=-j1
+  CYGCMAKE_GENERATOR="Unix Makefiles"
+fi
+
+CYGCMAKE_ARGS="
+  -DCYGWIN:BOOL=ON
+  -DBUILD_SHARED_LIBS:BOOL=ON
+  -DCOORDGEN_RIGOROUS_BUILD:BOOL=ON
+  -DCOORDGEN_BUILD_TESTS:BOOL=ON
+  -DCOORDGEN_BUILD_EXAMPLE:BOOL=ON
+  -DCOORDGEN_USE_MAEPARSER:BOOL=ON
+  -DCOORDGEN_BUILD_SHARED_LIBS:BOOL=ON
+"
+
+################################
+## Requirements for building
+################################
+BUILD_REQUIRES="\
+  pkg-config\
+  cmake\
+  ninja\
+  libboost-devel\
+  libmaeparser-devel\
+"
+
+################################
+## Patch files
+################################
+# Patch filenames are in a default style of 'git format-patch'
+PATCH_URI=$(\
+  find -maxdepth 1 -type f -name '[0-9][0-9][0-9][0-9]-*.patch' \
+  | sort \
+)
+# Additional patches, if any
+PATCH_URI+="
+"
+
+################################
+## Contents of our packages
+ORIG_NAME=coordgen
+
+################################
+# Runtime libraries
+THIS_PN="lib${ORIG_NAME}${ABI}"
+THIS_VN=${THIS_PN//[-+\.]/_}
+PKG_NAMES+=" ${THIS_PN}"
+
+printf -v "${THIS_VN}_CATEGORY" "%s" "${CATEGORY}"
+printf -v "${THIS_VN}_SUMMARY"  "%s" "${SUMMARY% *} (runtime)"
+printf -v "${THIS_VN}_CONTENTS" "%s" "\
+  usr/bin/*.dll\
+"
+printf -v "${THIS_VN}_REQUIRES" "%s" "\
+"
+
+################################
+# Devel
+THIS_PN="lib${ORIG_NAME}-devel"
+THIS_VN=${THIS_PN//[-+\.]/_}
+PKG_NAMES+=" ${THIS_PN}"
+
+printf -v "${THIS_VN}_CATEGORY" "%s" "Devel ${CATEGORY}"
+printf -v "${THIS_VN}_SUMMARY"  "%s" "${SUMMARY% *} (devel)"
+printf -v "${THIS_VN}_CONTENTS" "%s" "\
+  usr/include/\
+  usr/lib/\
+  usr/share/\
+"
+printf -v "${THIS_VN}_REQUIRES" "%s" "\
+"
+
+################################
+# Modified from cmake.cygclass/src_install (cmake)
+src_install() {
+        cd ${B}
+        if [ -f build.ninja ]
+        then
+                ninja_install
+        else
+                cyginstall
+        fi
+
+        # Install templates.mae
+        install -d ${D}/usr/share/coordgen/
+        install -m 644 ${S}/templates.mae ${D}/usr/share/coordgen/
+}
+
+################################
