@@ -4,7 +4,7 @@ inherit cmake ninja
 ################################
 
 NAME=schroedinger-coordgenlibs
-VERSION=1.4.2
+VERSION=2.0.2
 RELEASE=1
 
 ################################
@@ -18,8 +18,9 @@ HOMEPAGE="https://github.com/schrodinger/coordgenlibs"
 ################################
 GIT_REPO="https://github.com/schrodinger/coordgenlibs"
 declare -A GIT_DATEHASH_BY_NAME=(
-  # git log --date=iso-strict --format='%cd/%H' -1 v1.4.2
-  [1.4.2]=2020-10-13T12:06:25-07:00/98d819aa91482ab59afa1bf78ce429d5bd8532fd
+  # git log --date=iso-strict --format='%cd/%H' -1
+  [2.0.2]=2021-04-01T14:17:29-07:00/v2.0.2
+  [1.4.2]=2020-10-13T12:06:25-07:00/v1.4.2
 )
 REV_HASH="${GIT_DATEHASH_BY_NAME[${VERSION}]#*/}"
 REV_DATE="${GIT_DATEHASH_BY_NAME[${VERSION}]%/*}"
@@ -27,11 +28,11 @@ REV_DATE_SHORT="${GIT_DATEHASH_BY_NAME[${VERSION}]%T*}"
 GIT_BASENAME="${GIT_REPO##*/}"
 SRC_URI="${GIT_REPO}/archive/${REV_HASH}.tar.gz"   # GitHub
 #SRC_URI="${GIT_REPO}/-/archive/${REV_HASH}/${GIT_BASENAME}-${REV_HASH}.tar.bz2" # GitLab
-SRC_DIR="${GIT_BASENAME}-${REV_HASH}"
+SRC_DIR="${GIT_BASENAME}-${REV_HASH#v}"
 
 ################################
 ## ABI for libcoordgen
-ABI=1
+ABI=2
 ################################
 
 ################################
