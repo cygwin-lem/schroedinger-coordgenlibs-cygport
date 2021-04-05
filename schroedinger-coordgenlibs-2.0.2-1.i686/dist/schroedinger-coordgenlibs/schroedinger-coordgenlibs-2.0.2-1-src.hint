@@ -1,0 +1,7 @@
+category: Libs
+build-depends: cygport   pkg-config  cmake  ninja  libboost-devel  libmaeparser-devel
+sdesc: "A library for 2D coordinate generation for chemical compounds"
+ldesc: "coordgen is a library for 2D coordinate generation for chemical compounds."
+skip:
+test:
+homepage: https://github.com/schrodinger/coordgenlibs
