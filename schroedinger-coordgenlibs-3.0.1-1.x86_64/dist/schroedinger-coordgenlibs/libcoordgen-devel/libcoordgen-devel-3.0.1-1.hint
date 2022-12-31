@@ -1,0 +1,6 @@
+category: Devel Libs
+requires: libcoordgen3
+sdesc: "A library for 2D coordinate generation for chemical (devel)"
+ldesc: "coordgen is a library for 2D coordinate generation for chemical compounds."
+external-source: schroedinger-coordgenlibs
+test:

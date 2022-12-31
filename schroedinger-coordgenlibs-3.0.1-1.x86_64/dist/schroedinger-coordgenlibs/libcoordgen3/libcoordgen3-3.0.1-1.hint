@@ -1,0 +1,6 @@
+category: Libs
+requires: cygwin libgcc1 libmaeparser1 libstdc++6
+sdesc: "A library for 2D coordinate generation for chemical (runtime)"
+ldesc: "coordgen is a library for 2D coordinate generation for chemical compounds."
+external-source: schroedinger-coordgenlibs
+test:
