@@ -1,0 +1,7 @@
+category: Debug
+requires: cygwin-debuginfo
+external-source: schroedinger-coordgenlibs
+sdesc: "Debug info for schroedinger-coordgenlibs"
+ldesc: "This package contains files necessary for debugging the
+schroedinger-coordgenlibs package with gdb."
+test:
